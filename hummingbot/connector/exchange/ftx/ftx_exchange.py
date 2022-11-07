@@ -126,6 +126,7 @@ class FtxExchange(ExchangePyBase):
                            price: Decimal,
                            **kwargs) -> Tuple[str, float]:
 
+        # postOnly should be managed for a market order with a limit order
         api_params = {
             "market": await self.exchange_symbol_associated_to_pair(trading_pair),
             "side": trade_type.name.lower(),
@@ -133,6 +134,7 @@ class FtxExchange(ExchangePyBase):
             "type": "market" if trade_type == OrderType.MARKET else "limit",
             "size": float(amount),
             "clientId": order_id,
+            "postOnly": True
         }
         order_result = await self._api_post(
             path_url=CONSTANTS.FTX_PLACE_ORDER_PATH,
